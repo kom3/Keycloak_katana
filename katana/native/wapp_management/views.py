@@ -15,7 +15,7 @@ limitations under the License.
 import os
 import shutil
 import zipfile
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views import View
 import xml.etree.cElementTree as ET
@@ -49,7 +49,10 @@ class WappManagementView(View):
             if file_extension == ".xml":
                 preferences.append(filename)
         output = {"data": {"app": AppInformation.information.apps, "preferences": preferences}}
-        return render(request, WappManagementView.template, output)
+        if self.request.user.groups.filter(name='can_access_wappmanagement').exists():
+            return render(request, WappManagementView.template, output)
+        else:
+            return render(request, 'wapp_management/error_page.html')
 
 
 def update_installed_apps_section(request):

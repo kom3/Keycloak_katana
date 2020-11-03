@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     'django.contrib.admin',
     'django.contrib.auth',
+    'keycloak_oidc',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -50,6 +51,19 @@ INSTALLED_APPS = [
     'katana.wui.administration',
     'katana.wui.users',
     'katana.wui.core',
+    'katana.wapps.container',
+    'katana.wapps.assembler',
+    'katana.wapps.suites',
+    'katana.wapps.cli_data',
+    'katana.wapps.keycloak',
+    'katana.wapps.projects',
+    'katana.wapps.execution',
+    'katana.wapps.testwrapper',
+    'katana.wapps.cases',
+    'katana.wapps.wdf_edit',
+    'katana.native.wappstore',
+    'katana.native.microservice_store',
+    'katana.native.settings',
     'katana.native.wapp_management',
 
 ]
@@ -60,6 +74,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'mozilla_django_oidc.middleware.SessionRefresh',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'katana.wui.users.middleware.UserExpiryMiddleware',
@@ -127,27 +142,49 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': dbsqlite_path,
     },
-    'postgresql': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', 'warrior'),
-        'USER': os.environ.get('DB_USER', 'warrior'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'qwerty'),
-        'HOST': os.environ.get('DB_HOST', 'katana-db'),
-        'PORT': os.environ.get('DB_PORT', ''),
-    }
+#     'postgresql': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': os.environ.get('DB_NAME', 'warrior'),
+#         'USER': os.environ.get('DB_USER', 'warrior'),
+#         'PASSWORD': os.environ.get('DB_PASSWORD', 'qwerty'),
+#         'HOST': os.environ.get('DB_HOST', 'katana-db'),
+#         'PORT': os.environ.get('DB_PORT', ''),
+#     }
 }
 
 DATABASE_ROUTERS = ['katana.dbrouter.DbRouter']
 
 # Authentication settings
 AUTH_USER_MODEL = 'users.User'
-LOGIN_URL = '/katana/login'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
+
+
+if os.environ.get('KEYCLOAK_AUTH', False) in ['True', 'true']:
+    MIDDLEWARE.remove('katana.wui.users.middleware.LoginRequiredMiddleware')
+    AUTHENTICATION_BACKENDS += ('keycloak_oidc.auth.OIDCAuthenticationBackend', )
+    print("++++++++++++++++++++++++++++++++++++++++",AUTHENTICATION_BACKENDS)
+    from keycloak_oidc.default_settings import *
+    OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
+    OIDC_RP_CLIENT_SECRET = os.environ['OIDC_RP_CLIENT_SECRET']
+    OIDC_OP_AUTHORIZATION_ENDPOINT = os.getenv('OIDC_OP_AUTHORIZATION_ENDPOINT',
+        'http://localhost:8080/auth/realms/myrealm/protocol/openid-connect/auth')
+    OIDC_OP_TOKEN_ENDPOINT = os.getenv('OIDC_OP_TOKEN_ENDPOINT',
+        'http://localhost:8080/auth/realms/myrealm/protocol/openid-connect/token')
+    OIDC_OP_USER_ENDPOINT = os.getenv('OIDC_OP_USER_ENDPOINT',
+        'http://localhost:8080/auth/realms/myrealm/protocol/openid-connect/userinfo')
+    OIDC_OP_JWKS_ENDPOINT = os.getenv('OIDC_OP_JWKS_ENDPOINT',
+        'http://localhost:8080/auth/realms/myrealm/protocol/openid-connect/certs')
+    OIDC_OP_LOGOUT_ENDPOINT = os.getenv('OIDC_OP_LOGOUT_ENDPOINT',
+    'http://localhost:8080/auth/realms/myrealm/protocol/openid-connect/logout')
+    # LOGIN_REDIRECT_URL = '/'
+    # LOGOUT_REDIRECT_URL = '/'
+else:
+    LOGIN_URL = '/katana/login'
+    LOGIN_REDIRECT_URL = '/'
+    LOGOUT_REDIRECT_URL = '/'
 
 MULTI_USER_SUPPORT = False
 USER_HOME_DIR_TEMPLATE = None

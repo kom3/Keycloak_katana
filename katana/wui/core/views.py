@@ -29,6 +29,9 @@ from katana.utils.navigator_util import Navigator
 from katana.wui.core.apps import AppInformation
 from katana.wui.users.views import PublicView
 from .core_utils.core_settings import FileSettings, LDAPSettings, Restart, EMAILSettings, ENCRYPT_SETTINGS
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.http import HttpResponse
 
 nav_obj = Navigator()
 BASE_DIR = nav_obj.get_katana_dir()
@@ -40,6 +43,7 @@ except Exception as err:
 
 
 def refresh_landing_page(request):
+    
     return render(request, 'core/landing_page.html', {"apps": AppInformation.information.apps})
 
 
@@ -171,20 +175,33 @@ def check_if_file_exists(request):
         output = {"exists": file_or_dir_exists(join_path(directory, filename + extension))}
     return JsonResponse(output)
 
+def class_view_decorator(function_decorator):
+    """Convert a function based decorator into a class based decorator usable
+    on class based Views.
 
+    Can't subclass the `View` as it breaks inheritance (super in particular),
+    so we monkey-patch instead.
+    """
+
+    def simple_decorator(View):
+        View.dispatch = method_decorator(function_decorator)(View.dispatch)
+        return View
+
+    return simple_decorator
+
+@class_view_decorator(login_required)
 class HomeView(View):
-
     def __init__(self):
         self.index_page = 'core/unified_index.html'
         self.home_page = 'core/home_page.html'
         self.userprofile  = None
         self.username = None
-
     def get(self, request):
         user_data = self.get_user_data()
         fname_file = os.path.join(BASE_DIR, "wui/core/static/core/framework_name.json")
         data = read_json_data(fname_file)
         framename = data["fr_name"]
+        print(AppInformation.information.apps)
         return render(request, self.index_page, {"apps": AppInformation.information.apps, "userData": user_data, "frame_name": framename})
 
     def get_user_data(self):
@@ -198,7 +215,7 @@ class HomeView(View):
             userdata = json.load(f)
             return userdata
 
-
+@class_view_decorator(login_required)
 class SiteSettingsView(UserPassesTestMixin, View,):
 
     def test_func(self):
@@ -290,7 +307,11 @@ class SiteSettingsView(UserPassesTestMixin, View,):
 class LoginView(BaseLoginView, PublicView,):
     pass
 
+@login_required
+def app1(request):
+    return HttpResponse('<div><h3 style="color:green; background-color:#dfdbdb; height:35px; padding:20px; text-align:center">I am API 1 from Django App 1.</h3> </div><br> <br> <a href="/openid/logout">Logout</a> <br> <br> <a href="/">Home</a>')
 
+@class_view_decorator(login_required)
 class UserProfileView(View,):
 
     def get(self, request):
@@ -308,7 +329,7 @@ class UserProfileView(View,):
             messages.error(request, "Changes cannot be made. Please contact an admin.")
         return self.get(request)
 
-
+@class_view_decorator(login_required)
 class UserPasswordChangeView(View,):
 
     def _prep_from(self, request, form):

@@ -1,12 +1,14 @@
 {
     "app_title": "",
     "custom_logo_path": "",
-    "panel_color": "",
+    "panel_color": "green",
     "katana_default_apps": "True",
-    "user_custom_apps": {},
+    "user_custom_apps": {
+        "container": "/home/ko/Downloads/container"
+    },
     "katana_default_apps_branch": "",
     "apps_rely_on_postgresdb": [],
     "__READ_ACCESS__": "True",
-    "__userconfigured__": "False",
-    "__normal_run__": "False"
+    "__userconfigured__": "True",
+    "__normal_run__": "True"
 }

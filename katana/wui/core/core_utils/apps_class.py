@@ -37,6 +37,7 @@ class Apps:
                     js_urls[i] = get_relative_path(js_urls[i], app_path)
                 app.data["js_urls"] = js_urls
                 self.apps.append(app)
+        
         return self.apps
 
     def get_config_paths(self, data):

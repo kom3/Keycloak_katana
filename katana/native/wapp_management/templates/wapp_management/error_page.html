@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wapp Management</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'wapp_management/css/wapp_management.css' %}">
+    <script src="{% static 'wapp_management/sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
+</head>
+
+<body>
+    <div class="csrf-container">{% csrf_token %}</div>
+
+    <div style="font-size: 22px; color:red; text-align: center;">
+       Can not access this app!
+    </div>
+
+
+
+</body>
+
+</html>

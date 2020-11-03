@@ -30,7 +30,6 @@ class CoreConfig(AppConfig):
         config_json_file = join_path(base_directory, "config.json")
         settings_file_path = get_abs_path(join_path("wui", "settings.py"), base_directory)
         core_index_obj = CoreIndex(base_directory, settings_file_path=settings_file_path)
-
         available_apps = core_index_obj.get_available_apps()
         settings_apps = core_index_obj.get_apps_from_settings_file()
 

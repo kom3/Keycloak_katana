@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Container</title>
+  {% load static %}
+
+  <base href="/katana/container">
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bs-datepicker.css' %}">
+  <link rel="stylesheet" href="{% static 'css/fullcalendar.css' %}">
+  <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+  <link rel="stylesheet" href="{% static 'css/icons.css' %}">
+  <link rel="stylesheet" href="{% static 'css/font_sans.css' %}">
+
+  <link rel="stylesheet" href="{% static 'build/styles.a6fa31148d42bd960138.css' %}">
+
+  <style>
+    .colstyle {
+      /* border: 1px solid blue; */
+      background-color: #8bd4ff;
+      height: 37px;
+      border-radius: 17px;
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .colstyle:hover{
+       background-color: #33b3ff
+    }
+
+    .rowstyle {
+      text-align: center;
+      width: 100%;
+      min-height: 45px;
+      padding: 6px;
+      margin: auto;
+     
+    }
+
+    .result {
+      background-color:#329149;
+      height: 200px;
+      width: 100%;
+      color: white;
+      border-radius: 8px;
+      padding: 20px;
+      font-size: 19px;
+    }
+
+    .coldis{
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+
+  <app-root></app-root>
+
+  <div class="row rowstyle">
+    <div class="col-sm-6 ">
+      {% if usertype == "admin" %}
+      <div class="col-sm-12 colstyle" onclick ="cases.displayadmindetails()">Admin control panel</div>
+      {% else %}
+      <div class="col-sm-12 colstyle coldis">Admin control panel</div>
+      {% endif %}
+    </div>
+    <div class="col-sm-6 ">
+      <div class="col-sm-12 colstyle" onclick="cases.displayuserdetails()">User detais</div>
+    </div>
+  </div>
+
+  <div class="row rowstyle"> 
+    {% if usertype != "admin" %}
+    <div class="col-sm-6">
+        <div class="col-sm-12 " id="adminresult"></div>
+      </div>
+      {% else %}
+    <div class="col-sm-6" >
+      <div class="col-sm-12 result" id="adminresult" style="display: none;">
+          <b>Admin Settings </b><br>
+          <div style="display: flex; padding: 5px;">
+            <div>Change theme:</div> &nbsp; &nbsp;
+            <div><select id="themeselect" onchange="cases.themechange()"><option>Default</option>
+                <option>Green-Pink</option>
+                <option>Yellow-Red</option>
+            </select></div>
+          </div>
+
+      </div>
+    </div>
+    {% endif %}
+    
+    <div class="col-sm-6 " >
+      <div class="col-sm-12 result" id="userresult" style="display: none; text-align: left;">
+        <ul>
+            <li>User name: {{ user.username }}</li>
+            <li>First name: {{user.first_name}}</li>
+            <li>Last name: {{user.last_name}}</li>
+            <li>Email: {{user.email}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- <script src="{% static 'build/runtime-es5.839003fc7f90ff692c45.js' %}" type="text/javascript"></script>
+    <script src="{% static 'build/runtime-es2015.839003fc7f90ff692c45.js' %}" nomodule defer></script>
+    <script src="{% static 'build/polyfills-es2015.5b10b8fd823b6392f1fd.js' %}" nomodule defer></script>
+    <script src="{% static 'build/polyfills-es5.8e50a9832860f7cf804a.js' %}" type="text/javascript"></script>
+    <script src="{% static 'build/scripts.c65592293ae612b65c2f.js' %}" nomodule defer></script>
+    <script src="{% static 'build/main-es5.d105f54d1d0bdb0adfc4.js' %}" type="text/javascript"></script>
+    <script src="{% static 'build/main-es2015.d105f54d1d0bdb0adfc4.js' %}" nomodule  defer></script>
+
+    <script src="{% static 'build/5-es2015.d4f5fcc02c7d59590afc.js' %}" nomodule  defer></script>
+    <script src="{% static 'build/5-es5.d4f5fcc02c7d59590afc.js' %}" type="text/javascript"></script>
+    <script src="{% static 'build/6-es2015.7b3289f60ff77cd35980.js' %}" nomodule defer></script>
+    <script src="{% static 'build/6-es5.7b3289f60ff77cd35980.js' %}" type="text/javascript"></script>
+    <script src="{% static 'build/7-es2015.7b3289f60ff77cd35980.js' %}" nomodule defer></script>
+    <script src="{% static 'build/7-es5.7b3289f60ff77cd35980.js' %}" type="text/javascript"></script> -->
+</body>
+
+</html>

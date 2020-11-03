@@ -1,10 +1,11 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
     url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^login/', views.LoginView.as_view(template_name='core/login.html'), name='login'),
+    url(r"^app1/$", views.app1, name="app1"),
     url(r'^logout/', auth_views.LogoutView.as_view(), name='logout'),
     url(r'^site_settings/$', views.SiteSettingsView.as_view(), name='site_settings'),
     url(r'^accounts/profile/$', views.UserProfileView.as_view(), name='user_profile'),

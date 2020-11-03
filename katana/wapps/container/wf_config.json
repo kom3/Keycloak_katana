@@ -1,0 +1,15 @@
+{
+  "icon": "database",
+  "color": "blue",
+  "developer": "Warrior Framework",
+  "description": "This is the Official Warrior Container App",
+  "app" : {"name" : "Container App", "url" : "/katana/container/", "include": "katana.wapps.container.urls"},
+  "warrior-compatibility": ":warrior-4.0.0-beta",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": "",
+  "pure_django": true
+}
+
+
